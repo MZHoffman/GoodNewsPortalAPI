@@ -50,6 +50,8 @@ describe('GET /api/articles/:article_id', () => {
       .get('/api/articles/1')
       .expect(200)
       .then((response) => {
+        const { article } = response.body;
+        expect(article).toHaveProperty('article_id', expect.any(Number));
         console.log('🚀 ~ returnrequest ~ response:', response.body);
       });
   });
