@@ -43,3 +43,55 @@ describe('GET /api/topics', () => {
       });
   });
 });
+describe('GET /api/articles', () => {
+  test('returned array is not empty', () => {
+    return request(app)
+      .get('/api/articles')
+      .expect(200)
+      .then((response) => {
+        expect(response.body.articles.length).not.toBe(0);
+      });
+  });
+  test('return an array of article objects', () => {
+    return request(app)
+      .get('/api/articles')
+      .expect(200)
+      .then((response) => {
+        const { articles } = response.body;
+        articles.forEach((article) => {
+          expect(article).toEqual(
+            expect.objectContaining({
+              author: expect.any(String),
+              title: expect.any(String),
+              article_id: expect.any(Number),
+              topic: expect.any(String),
+              created_at: expect.any(String),
+              votes: expect.any(Number),
+              article_img_url: expect.any(String),
+              comments_count: expect.any(Number),
+            })
+          );
+        });
+      });
+  });
+  test('returns array sorted by created_at DESC', () => {
+    return request(app)
+      .get('/api/articles')
+      .expect(200)
+      .then((response) => {
+        const { articles } = response.body;
+        expect(articles).toBeSortedBy('created_at', { descending: true });
+      });
+  });
+  test('returns objects dont have body property', () => {
+    return request(app)
+      .get('/api/articles')
+      .expect(200)
+      .then((response) => {
+        const { articles } = response.body;
+        articles.forEach((article) =>
+          expect(article).not.toHaveProperty('body')
+        );
+      });
+  });
+});
