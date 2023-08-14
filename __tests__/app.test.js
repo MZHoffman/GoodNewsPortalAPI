@@ -43,3 +43,14 @@ describe('GET /api/topics', () => {
       });
   });
 });
+
+describe('GET /api/articles/:article_id', () => {
+  test('returns article object when passed id', () => {
+    return request(app)
+      .get('/api/articles/1')
+      .expect(200)
+      .then((response) => {
+        console.log('🚀 ~ returnrequest ~ response:', response.body);
+      });
+  });
+});
