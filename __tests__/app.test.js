@@ -53,7 +53,29 @@ describe('GET /api/articles/:article_id', () => {
       .then((response) => {
         const { article } = response.body;
         expect(article).toHaveProperty('article_id', expect.any(Number));
-        console.log('🚀 ~ returnrequest ~ response:', response.body);
+        expect(article).toHaveProperty('title', expect.any(String));
+        expect(article).toHaveProperty('topic', expect.any(String));
+        expect(article).toHaveProperty('author', expect.any(String));
+        expect(article).toHaveProperty('body', expect.any(String));
+        expect(article).toHaveProperty('created_at', expect.any(String));
+        expect(article).toHaveProperty('votes', expect.any(Number));
+        expect(article).toHaveProperty('article_img_url', expect.any(String));
+      });
+  });
+  test('returns an error if article id has not been found', () => {
+    return request(app)
+      .get('/api/articles/9999999')
+      .expect(404)
+      .then((response) => {
+        expect(response.body.msg).toBe('Not found');
+      });
+  });
+  test('returns an error if article id is not an integer', () => {
+    return request(app)
+      .get('/api/articles/BOOM')
+      .expect(400)
+      .then((response) => {
+        expect(response.body.msg).toBe('Bad request');
       });
   });
 });
@@ -63,7 +85,6 @@ describe('GET /api', () => {
       .get('/api')
       .expect(200)
       .then((response) => {
-        const endpoindsJSON = JSON.stringify(response.body.endpoints);
         expect(response.body.endpoints).toStrictEqual(expectedEndpoints);
       });
   });
