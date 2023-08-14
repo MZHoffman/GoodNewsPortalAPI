@@ -3,6 +3,7 @@ const request = require('supertest');
 const db = require('../db/connection');
 const seed = require('../db/seeds/seed');
 const data = require('../db/data/test-data/');
+const expectedEndpoints = require('../endpoints.json');
 
 beforeEach(() => seed(data));
 afterAll(() => db.end());
@@ -53,6 +54,17 @@ describe('GET /api/articles/:article_id', () => {
         const { article } = response.body;
         expect(article).toHaveProperty('article_id', expect.any(Number));
         console.log('🚀 ~ returnrequest ~ response:', response.body);
+      });
+  });
+});
+describe('GET /api', () => {
+  test('GET /api returns endpoints desctiption object', () => {
+    request(app)
+      .get('/api')
+      .expect(200)
+      .then((response) => {
+        const endpoindsJSON = JSON.stringify(response.body.endpoints);
+        expect(response.body.endpoints).toStrictEqual(expectedEndpoints);
       });
   });
 });
