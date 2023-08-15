@@ -53,13 +53,25 @@ describe('GET /api/articles/:article_id', () => {
       .then((response) => {
         const { article } = response.body;
         expect(article).toHaveProperty('article_id', 1);
-        expect(article).toHaveProperty('title', expect.any(String));
-        expect(article).toHaveProperty('topic', expect.any(String));
-        expect(article).toHaveProperty('author', expect.any(String));
-        expect(article).toHaveProperty('body', expect.any(String));
-        expect(article).toHaveProperty('created_at', expect.any(String));
-        expect(article).toHaveProperty('votes', expect.any(Number));
-        expect(article).toHaveProperty('article_img_url', expect.any(String));
+        expect(article).toHaveProperty(
+          'title',
+          'Living in the shadow of a great man'
+        );
+        expect(article).toHaveProperty('topic', 'mitch');
+        expect(article).toHaveProperty('author', 'butter_bridge');
+        expect(article).toHaveProperty(
+          'body',
+          'I find this existence challenging'
+        );
+        expect(article).toHaveProperty(
+          'created_at',
+          '2020-07-09T20:11:00.000Z'
+        );
+        expect(article).toHaveProperty('votes', 100);
+        expect(article).toHaveProperty(
+          'article_img_url',
+          'https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700'
+        );
       });
   });
   test('returns an error if article id has not been found', () => {
