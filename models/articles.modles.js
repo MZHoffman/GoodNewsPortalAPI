@@ -32,15 +32,3 @@ exports.selectArticle = (article_id) => {
     return response.rows[0];
   });
 };
-
-exports.checkIfArticleExists = (article_id) => {
-  const queryStr = 'SELECT * FROM articles WHERE article_id = $1;';
-  return db.query(queryStr, [article_id]).then((response) => {
-    console.log('🚀 ~ returndb.query ~ response:', response);
-    if (response.rowCount === 0) {
-      console.log('BOOM');
-      return Promise.reject({ status: 404, msg: 'Not found' });
-    }
-    return;
-  });
-};

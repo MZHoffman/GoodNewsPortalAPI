@@ -1,7 +1,4 @@
-const {
-  checkIfArticleExists,
-  selectArticle,
-} = require('../models/articles.modles');
+const { selectArticle } = require('../models/articles.modles');
 const { selectCommentsForArticle } = require('../models/comments.models');
 
 exports.getCommentsForArticle = (req, res, next) => {
