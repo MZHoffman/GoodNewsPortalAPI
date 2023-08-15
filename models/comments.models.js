@@ -1,0 +1,8 @@
+const db = require('../db/connection');
+
+exports.selectCommentsForArticle = (article_id) => {
+  const queryStr = 'SELECT * FROM comments WHERE article_id = $1;';
+  return db.query(queryStr, [article_id]).then((response) => {
+    return response.rows;
+  });
+};

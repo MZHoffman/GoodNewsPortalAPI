@@ -4,6 +4,7 @@ const db = require('../db/connection');
 const seed = require('../db/seeds/seed');
 const data = require('../db/data/test-data/');
 const expectedEndpoints = require('../endpoints.json');
+const articles = require('../db/data/test-data/articles');
 
 beforeEach(() => seed(data));
 afterAll(() => db.end());
@@ -136,6 +137,61 @@ describe('GET /api/articles/:article_id', () => {
   test('returns an error if article id is not an integer', () => {
     return request(app)
       .get('/api/articles/BOOM')
+      .expect(400)
+      .then((response) => {
+        expect(response.body.msg).toBe('Bad request');
+      });
+  });
+});
+
+describe('GET /api/articles/:article_id/comments', () => {
+  test('returns array of 11 comments for  article_id 1', () => {
+    return request(app)
+      .get('/api/articles/1/comments')
+      .expect(200)
+      .then((response) => {
+        const { comments } = response.body;
+        expect(comments.length).toBe(11);
+      });
+  });
+  test('returns array of 0 comments for  article_id 2', () => {
+    return request(app)
+      .get('/api/articles/2/comments')
+      .then((response) => {
+        const { comments } = response.body;
+        expect(comments.length).toBe(0);
+      });
+  });
+  test('each comment object has requirest keys', () => {
+    return request(app)
+      .get('/api/articles/1/comments')
+      .then((response) => {
+        const { comments } = response.body;
+        comments.forEach((comment) =>
+          expect(comment).toEqual(
+            expect.objectContaining({
+              comment_id: expect.any(Number),
+              body: expect.any(String),
+              article_id: expect.any(Number),
+              author: expect.any(String),
+              votes: expect.any(Number),
+              created_at: expect.any(String),
+            })
+          )
+        );
+      });
+  });
+  test('returns an error if article id has not been found', () => {
+    return request(app)
+      .get('/api/articles/99999999/comments')
+      .expect(404)
+      .then((response) => {
+        expect(response.body.msg).toBe('Not found');
+      });
+  });
+  test('returns an error if article id is not an int', () => {
+    return request(app)
+      .get('/api/articles/BOOM/comments')
       .expect(400)
       .then((response) => {
         expect(response.body.msg).toBe('Bad request');
