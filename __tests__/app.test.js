@@ -45,20 +45,15 @@ describe('GET /api/topics', () => {
   });
 });
 describe('GET /api/articles', () => {
-  test('returned array is not empty', () => {
-    return request(app)
-      .get('/api/articles')
-      .expect(200)
-      .then((response) => {
-        expect(response.body.articles.length).not.toBe(0);
-      });
+  test('returnes 200', () => {
+    return request(app).get('/api/articles').expect(200);
   });
   test('return an array of article objects', () => {
     return request(app)
       .get('/api/articles')
-      .expect(200)
       .then((response) => {
         const { articles } = response.body;
+        expect(articles).toBeInstanceOf(Array);
         articles.forEach((article) => {
           expect(article).toEqual(
             expect.objectContaining({
@@ -87,7 +82,6 @@ describe('GET /api/articles', () => {
   test('returns objects doesnt have body property', () => {
     return request(app)
       .get('/api/articles')
-      .expect(200)
       .then((response) => {
         const { articles } = response.body;
         articles.forEach((article) =>

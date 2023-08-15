@@ -9,17 +9,11 @@ exports.selectArticles = () => {
   articles.created_at, 
   articles.votes, 
   articles.article_img_url,
-  COALESCE(COUNT(comments.comment_id), 0)::int as comments_count
+  COUNT(comments.article_id)::int as comments_count
   FROM articles
   LEFT JOIN comments ON articles.article_id = comments.article_id
   GROUP BY 
-  articles.author, 
-  articles.title, 
-  articles.article_id, 
-  articles.topic, 
-  articles.created_at,
-  articles.votes, 
-  articles.article_img_url
+  articles.article_id
   ORDER BY articles.created_at DESC;
 `;
   return db.query(queryStr).then((response) => {
