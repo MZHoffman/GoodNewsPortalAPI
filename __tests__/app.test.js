@@ -125,6 +125,7 @@ describe('GET /api/articles/:article_id', () => {
         );
       });
   });
+
   test('returns an error if article id has not been found', () => {
     return request(app)
       .get('/api/articles/9999999')
@@ -178,6 +179,16 @@ describe('GET /api/articles/:article_id/comments', () => {
             })
           )
         );
+      });
+  });
+  test('comments should be sorted by the most recent one', () => {
+    return request(app)
+      .get('/api/articles/1/comments')
+      .then((response) => {
+        const { comments } = response.body;
+        expect(comments).toBeSortedBy('created_at', {
+          descending: true,
+        });
       });
   });
   test('returns an error if article id has not been found', () => {
