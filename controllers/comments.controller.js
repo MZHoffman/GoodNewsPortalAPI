@@ -8,8 +8,8 @@ exports.getCommentsForArticle = (req, res, next) => {
     selectArticle(article_id),
   ];
   return Promise.all(promises)
-    .then((comments) => {
-      return res.status(200).send({ comments: comments[0] });
+    .then((resplvedPromises) => {
+      return res.status(200).send({ comments: resplvedPromises[0] });
     })
     .catch((err) => {
       return next(err);

@@ -162,7 +162,7 @@ describe('GET /api/articles/:article_id/comments', () => {
         expect(comments.length).toBe(0);
       });
   });
-  test('each comment object has requirest keys', () => {
+  test('each comment object has required keys', () => {
     return request(app)
       .get('/api/articles/1/comments')
       .then((response) => {
