@@ -19,12 +19,12 @@ describe('returns 404 if route not found', () => {
   });
 });
 describe('GET /api/topics', () => {
-  test('GET /api/topics returns list of topics wchich is not empty', () => {
+  test('GET /api/topics returns list of topics length of 3', () => {
     return request(app)
       .get('/api/topics')
       .expect(200)
       .then((response) => {
-        expect(response.body.topics.length).not.toBe(0);
+        expect(response.body.topics.length).toBe(3);
       });
   });
   test('GET /api/topics returns list of topics', () => {
@@ -41,6 +41,57 @@ describe('GET /api/topics', () => {
             })
           );
         });
+      });
+  });
+});
+describe('GET /api/articles', () => {
+  test('returns array lamgth of 13', () => {
+    return request(app)
+      .get('/api/articles')
+      .expect(200)
+      .then((response) => {
+        expect(response.body.articles.length).toBe(13);
+      });
+  });
+  test('return an array of article objects', () => {
+    return request(app)
+      .get('/api/articles')
+      .then((response) => {
+        const { articles } = response.body;
+        expect(articles).toBeInstanceOf(Array);
+        articles.forEach((article) => {
+          expect(article).toEqual(
+            expect.objectContaining({
+              author: expect.any(String),
+              title: expect.any(String),
+              article_id: expect.any(Number),
+              topic: expect.any(String),
+              created_at: expect.any(String),
+              votes: expect.any(Number),
+              article_img_url: expect.any(String),
+              comments_count: expect.any(Number),
+            })
+          );
+        });
+      });
+  });
+  test('returns array sorted by created_at DESC', () => {
+    return request(app)
+      .get('/api/articles')
+      .expect(200)
+      .then((response) => {
+        const { articles } = response.body;
+        expect(articles).toBeSortedBy('created_at', { descending: true });
+      });
+  });
+  test('returns objects doesnt have body property', () => {
+    return request(app)
+      .get('/api/articles')
+      .then((response) => {
+        const { articles } = response.body;
+        articles.forEach((article) =>
+          expect(article).not.toHaveProperty('body')
+        );
       });
   });
 });
