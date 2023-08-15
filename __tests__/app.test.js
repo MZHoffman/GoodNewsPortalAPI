@@ -19,12 +19,12 @@ describe('returns 404 if route not found', () => {
   });
 });
 describe('GET /api/topics', () => {
-  test('GET /api/topics returns list of topics wchich is not empty', () => {
+  test('GET /api/topics returns list of topics length of 3', () => {
     return request(app)
       .get('/api/topics')
       .expect(200)
       .then((response) => {
-        expect(response.body.topics.length).not.toBe(0);
+        expect(response.body.topics.length).toBe(3);
       });
   });
   test('GET /api/topics returns list of topics', () => {
@@ -45,8 +45,13 @@ describe('GET /api/topics', () => {
   });
 });
 describe('GET /api/articles', () => {
-  test('returnes 200', () => {
-    return request(app).get('/api/articles').expect(200);
+  test('returns array lamgth of 13', () => {
+    return request(app)
+      .get('/api/articles')
+      .expect(200)
+      .then((response) => {
+        expect(response.body.articles.length).toBe(13);
+      });
   });
   test('return an array of article objects', () => {
     return request(app)
