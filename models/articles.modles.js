@@ -1,3 +1,4 @@
+const format = require('pg-format');
 const db = require('../db/connection');
 
 exports.selectArticles = () => {
@@ -26,6 +27,22 @@ exports.selectArticles = () => {
 exports.selectArticle = (article_id) => {
   const queryStr = 'SELECT * FROM articles WHERE article_id = $1;';
   return db.query(queryStr, [article_id]).then((response) => {
+    if (response.rowCount === 0) {
+      return Promise.reject({ status: 404, msg: 'Not found' });
+    }
+    return response.rows[0];
+  });
+};
+
+exports.updateArticle = (article_id, inc_votes) => {
+  const queryStr = format(
+    `UPDATE articles 
+  SET votes = votes + %L WHERE article_id = %L RETURNING *;`,
+    inc_votes,
+    article_id
+  );
+  console.log('🚀 ~ queryStr:', queryStr);
+  return db.query(queryStr).then((response) => {
     if (response.rowCount === 0) {
       return Promise.reject({ status: 404, msg: 'Not found' });
     }

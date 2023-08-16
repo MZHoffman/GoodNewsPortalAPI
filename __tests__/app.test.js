@@ -285,6 +285,93 @@ describe('POST /api/articles/:article_id/comments', () => {
   });
 });
 
+describe('PATCH /api/articles/:article_id', () => {
+  test('returns updated article with incremented votes', () => {
+    const body = {
+      inc_votes: 1,
+    };
+    return request(app)
+      .patch('/api/articles/1')
+      .send(body)
+      .expect(200)
+      .then((response) => {
+        const { article } = response.body;
+        expect(article).toEqual({
+          article_id: 1,
+          title: 'Living in the shadow of a great man',
+          topic: 'mitch',
+          author: 'butter_bridge',
+          body: 'I find this existence challenging',
+          created_at: '2020-07-09T20:11:00.000Z',
+          votes: 101,
+          article_img_url:
+            'https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700',
+        });
+      });
+  });
+  test('returns updated article with decremented votes', () => {
+    const body = {
+      inc_votes: -101,
+    };
+    return request(app)
+      .patch('/api/articles/1')
+      .send(body)
+      .expect(200)
+      .then((response) => {
+        const { article } = response.body;
+        expect(article).toEqual({
+          article_id: 1,
+          title: 'Living in the shadow of a great man',
+          topic: 'mitch',
+          author: 'butter_bridge',
+          body: 'I find this existence challenging',
+          created_at: '2020-07-09T20:11:00.000Z',
+          votes: -1,
+          article_img_url:
+            'https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700',
+        });
+      });
+  });
+  test('returns an error if article not found', () => {
+    const body = {
+      inc_votes: -101,
+    };
+    return request(app)
+      .patch('/api/articles/999999')
+      .send(body)
+      .expect(404)
+      .then((response) => {
+        console.log(response.body.msg);
+        expect(response.body.msg).toBe('Not found');
+      });
+  });
+  test('returns an error if body has not been passed', () => {
+    const body = {
+      // inc_votes: -101,
+    };
+    return request(app)
+      .patch('/api/articles/1')
+      .send(body)
+      .expect(400)
+      .then((response) => {
+        expect(response.body.msg).toBe('Bad request');
+      });
+  });
+  test('returns an error if body isnt an int', () => {
+    const body = {
+      inc_votes: 'BOOM!',
+    };
+    return request(app)
+      .patch('/api/articles/1')
+      .send(body)
+      .expect(400)
+      .then((response) => {
+        console.log(response.body.msg);
+        expect(response.body.msg).toBe('Bad request');
+      });
+  });
+});
+
 describe('GET /api', () => {
   test('GET /api returns endpoints desctiption object', () => {
     request(app)

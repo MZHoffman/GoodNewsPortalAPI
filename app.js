@@ -3,6 +3,7 @@ const { getTopics } = require('./controllers/topics.controller');
 const {
   getArticles,
   getArticle,
+  patchArticle,
 } = require('./controllers/articles.controller');
 const { getAPIDescription } = require('./controllers/endpoits.controller');
 const {
@@ -19,6 +20,7 @@ app.get('/api/articles/:article_id', getArticle);
 app.get('/api/articles', getArticles);
 app.get('/api/articles/:article_id/comments', getCommentsForArticle);
 app.post('/api/articles/:article_id/comments', postCommentsForArticle);
+app.patch('/api/articles/:article_id', patchArticle);
 
 app.all('*', (req, res) => {
   res.status(404).send({ msg: 'not found' });
