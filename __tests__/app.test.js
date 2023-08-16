@@ -392,6 +392,39 @@ describe('DELETE /api/comments/:comment_id', () => {
   });
 });
 
+describe('GET /api/users', () => {
+  test('returns array length of 4 user objects', () => {
+    return request(app)
+      .get('/api/users')
+      .expect(200)
+      .then((response) => {
+        const { users } = response.body;
+        expect(users.length).toBe(4);
+      });
+  });
+  test('returns array of user objects with the right keys and properties', () => {
+    return request(app)
+      .get('/api/users')
+      .then((response) => {
+        const { users } = response.body;
+        console.log(
+          '🚀 ~ .then ~ users:',
+          JSON.stringify(response.body, null, 2)
+        );
+        users.forEach((user) =>
+          expect(user).toEqual(
+            expect.objectContaining({
+              username: expect.any(String),
+              name: expect.any(String),
+              avatar_url: expect.any(String),
+            })
+          )
+        );
+        expect(users.length).toBe(4);
+      });
+  });
+});
+
 describe('GET /api', () => {
   test('GET /api returns endpoints desctiption object', () => {
     return request(app)
