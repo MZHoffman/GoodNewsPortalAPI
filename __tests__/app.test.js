@@ -341,7 +341,6 @@ describe('PATCH /api/articles/:article_id', () => {
       .send(body)
       .expect(404)
       .then((response) => {
-        console.log(response.body.msg);
         expect(response.body.msg).toBe('Not found');
       });
   });
@@ -366,7 +365,28 @@ describe('PATCH /api/articles/:article_id', () => {
       .send(body)
       .expect(400)
       .then((response) => {
-        console.log(response.body.msg);
+        expect(response.body.msg).toBe('Bad request');
+      });
+  });
+});
+
+describe('DELETE /api/comments/:comment_id', () => {
+  test('DELETE /api/comments/1returns 204', () => {
+    return request(app).delete('/api/comments/1').expect(204);
+  });
+  test('Returns error if the comment doesnt exist', () => {
+    return request(app)
+      .delete('/api/comments/9999999')
+      .expect(404)
+      .then((response) => {
+        expect(response.body.msg).toBe('Not found');
+      });
+  });
+  test('Returns error if the comment_id is not int', () => {
+    return request(app)
+      .delete('/api/comments/BOOM!')
+      .expect(400)
+      .then((response) => {
         expect(response.body.msg).toBe('Bad request');
       });
   });
@@ -374,7 +394,7 @@ describe('PATCH /api/articles/:article_id', () => {
 
 describe('GET /api', () => {
   test('GET /api returns endpoints desctiption object', () => {
-    request(app)
+    return request(app)
       .get('/api')
       .expect(200)
       .then((response) => {

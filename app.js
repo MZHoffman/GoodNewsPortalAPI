@@ -9,6 +9,7 @@ const { getAPIDescription } = require('./controllers/endpoits.controller');
 const {
   getCommentsForArticle,
   postCommentsForArticle,
+  removeComment,
 } = require('./controllers/comments.controller');
 
 const app = express();
@@ -21,6 +22,7 @@ app.get('/api/articles', getArticles);
 app.get('/api/articles/:article_id/comments', getCommentsForArticle);
 app.post('/api/articles/:article_id/comments', postCommentsForArticle);
 app.patch('/api/articles/:article_id', patchArticle);
+app.delete('/api/comments/:comment_id', removeComment);
 
 app.all('*', (req, res) => {
   res.status(404).send({ msg: 'not found' });

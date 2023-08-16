@@ -2,6 +2,7 @@ const { selectArticle } = require('../models/articles.modles');
 const {
   selectCommentsForArticle,
   insertCommentForArticle,
+  deleteComment,
 } = require('../models/comments.models');
 
 exports.getCommentsForArticle = (req, res, next) => {
@@ -30,6 +31,22 @@ exports.postCommentsForArticle = (req, res, next) => {
       return res.status(200).send({ comment });
     })
     .catch((err) => {
+      return next(err);
+    });
+};
+
+exports.removeComment = (req, res, next) => {
+  const { comment_id } = req.params;
+  return deleteComment(comment_id)
+    .then((deletedComments) => {
+      console.log('🚀 ~ .then ~ comment:', deletedComments);
+      if (!deletedComments) {
+        return Promise.reject({ status: 404, msg: 'Not found' });
+      }
+      return res.status(204).send();
+    })
+    .catch((err) => {
+      console.log('🚀 ~ err:', err);
       return next(err);
     });
 };
