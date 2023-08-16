@@ -1,5 +1,8 @@
 const { selectArticle } = require('../models/articles.modles');
-const { selectCommentsForArticle } = require('../models/comments.models');
+const {
+  selectCommentsForArticle,
+  insertCommentForArticle,
+} = require('../models/comments.models');
 
 exports.getCommentsForArticle = (req, res, next) => {
   const { article_id } = req.params;
@@ -8,8 +11,23 @@ exports.getCommentsForArticle = (req, res, next) => {
     selectArticle(article_id),
   ];
   return Promise.all(promises)
-    .then((resplvedPromises) => {
-      return res.status(200).send({ comments: resplvedPromises[0] });
+    .then((resolvedPromises) => {
+      return res.status(200).send({ comments: resolvedPromises[0] });
+    })
+    .catch((err) => {
+      return next(err);
+    });
+};
+
+exports.postCommentsForArticle = (req, res, next) => {
+  const { article_id } = req.params;
+  const { username, body } = req.body;
+  return insertCommentForArticle(article_id, username, body)
+    .then((comment) => {
+      comment.created_at = new Date(
+        new Date(comment.created_at).setMilliseconds(0)
+      ).toISOString();
+      return res.status(200).send({ comment });
     })
     .catch((err) => {
       return next(err);

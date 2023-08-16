@@ -208,6 +208,83 @@ describe('GET /api/articles/:article_id/comments', () => {
       });
   });
 });
+
+describe('POST /api/articles/:article_id/comments', () => {
+  test('returns a comment object with required keys and right values', () => {
+    const body = {
+      body: 'test',
+      username: 'butter_bridge',
+    };
+    return request(app)
+      .post('/api/articles/1/comments')
+      .send(body)
+      .expect(200)
+      .then((response) => {
+        const { comment } = response.body;
+        expect(comment).toEqual({
+          comment_id: 19,
+          body: 'test',
+          article_id: 1,
+          author: 'butter_bridge',
+          votes: 0,
+          created_at: new Date(new Date().setMilliseconds(0)).toISOString(),
+        });
+      });
+  });
+  test('returns a an error if article_id doesnt exists', () => {
+    const body = {
+      body: 'testComment',
+      username: 'butter_bridge',
+    };
+    return request(app)
+      .post('/api/articles/99999999/comments')
+      .send(body)
+      .expect(404)
+      .then((response) => {
+        expect(response.body.msg).toBe('Not found');
+      });
+  });
+  test('returns a an error if author doesnt exists', () => {
+    const body = {
+      body: 'testComment',
+      username: 'Smooth_Operator',
+    };
+    return request(app)
+      .post('/api/articles/1/comments')
+      .send(body)
+      .expect(404)
+      .then((response) => {
+        expect(response.body.msg).toBe('Not found');
+      });
+  });
+  test('returns a an error if author hasnt been passed', () => {
+    const body = {
+      body: 'testComment',
+      // username: 'Smooth_Operator',
+    };
+    return request(app)
+      .post('/api/articles/1/comments')
+      .send(body)
+      .expect(400)
+      .then((response) => {
+        expect(response.body.msg).toBe('Bad request');
+      });
+  });
+  test('returns a an error if body hasnt been passed', () => {
+    const body = {
+      // body: 'testComment',
+      username: 'Smooth_Operator',
+    };
+    return request(app)
+      .post('/api/articles/1/comments')
+      .send(body)
+      .expect(400)
+      .then((response) => {
+        expect(response.body.msg).toBe('Bad request');
+      });
+  });
+});
+
 describe('GET /api', () => {
   test('GET /api returns endpoints desctiption object', () => {
     request(app)
