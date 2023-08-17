@@ -24,9 +24,9 @@ exports.postCommentsForArticle = (req, res, next) => {
   const { username, body } = req.body;
   return insertCommentForArticle(article_id, username, body)
     .then((comment) => {
-      comment.created_at = new Date(
-        new Date(comment.created_at).setMilliseconds(0)
-      ).toISOString();
+      // comment.created_at = new Date(
+      //   new Date(comment.created_at).setMilliseconds(0)
+      // ).toISOString();
       return res.status(200).send({ comment });
     })
     .catch((err) => {

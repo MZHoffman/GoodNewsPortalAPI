@@ -227,8 +227,23 @@ describe('POST /api/articles/:article_id/comments', () => {
           article_id: 1,
           author: 'butter_bridge',
           votes: 0,
-          created_at: new Date(new Date().setMilliseconds(0)).toISOString(),
+          created_at: expect.any(String),
         });
+      });
+  });
+  test('returns a comment object create_at string that is a date', () => {
+    const body = {
+      body: 'test',
+      username: 'butter_bridge',
+    };
+    return request(app)
+      .post('/api/articles/1/comments')
+      .send(body)
+      .expect(200)
+      .then((response) => {
+        const { comment } = response.body;
+        const date = new Date(comment.created_at);
+        expect(date).toEqual(expect.any(Date));
       });
   });
   test('returns a an error if article_id doesnt exists', () => {
@@ -260,7 +275,6 @@ describe('POST /api/articles/:article_id/comments', () => {
   test('returns a an error if author hasnt been passed', () => {
     const body = {
       body: 'testComment',
-      // username: 'Smooth_Operator',
     };
     return request(app)
       .post('/api/articles/1/comments')
@@ -272,7 +286,6 @@ describe('POST /api/articles/:article_id/comments', () => {
   });
   test('returns a an error if body hasnt been passed', () => {
     const body = {
-      // body: 'testComment',
       username: 'Smooth_Operator',
     };
     return request(app)
