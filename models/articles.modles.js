@@ -32,11 +32,8 @@ exports.selectArticles = (sort_by = 'created_at', order, topic) => {
   }
   baseQuery += order === 'ASC' ? ' ASC;' : ' DESC;';
 
-  return db.query(baseQuery).then((response) => {
-    if (response.rowCount === 0) {
-      return Promise.reject({ status: 404, msg: 'Not found' });
-    }
-    return response.rows;
+  return db.query(baseQuery).then(({ rows }) => {
+    return rows;
   });
 };
 exports.selectArticle = (article_id) => {

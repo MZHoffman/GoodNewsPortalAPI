@@ -102,6 +102,15 @@ describe('GET /api/articles', () => {
         articles.forEach((article) => expect(article.topic).toBe('mitch'));
       });
   });
+  test('returns 200 if topic is valid but the is no articles about it', () => {
+    return request(app)
+      .get('/api/articles?topic=paper')
+      .expect(200)
+      .then((response) => {
+        const { articles } = response.body;
+        expect(articles.length).toBe(0);
+      });
+  });
   test('returns objects doesnt have body property', () => {
     return request(app)
       .get('/api/articles')
@@ -129,7 +138,6 @@ describe('GET /api/articles', () => {
       });
   });
 });
-
 describe('GET /api/articles/:article_id', () => {
   test('returns article object when passed id', () => {
     return request(app)
