@@ -1,23 +1,38 @@
 const format = require('pg-format');
 const db = require('../db/connection');
 
-exports.selectArticles = () => {
-  const queryStr = `SELECT 
+exports.selectArticles = (sort_by = 'created_at', order, topic) => {
+  const allowedTopics = ['mitch', 'cats', 'paper', undefined];
+
+  let baseQuery = `SELECT 
   articles.author, 
   articles.title, 
   articles.article_id, 
+  articles.article_img_url,
   articles.topic, 
   articles.created_at, 
   articles.votes, 
-  articles.article_img_url,
   COUNT(comments.article_id)::int as comments_count
   FROM articles
   LEFT JOIN comments ON articles.article_id = comments.article_id
-  GROUP BY 
-  articles.article_id
-  ORDER BY articles.created_at DESC;
 `;
-  return db.query(queryStr).then((response) => {
+
+  if (!allowedTopics.includes(topic)) {
+    return Promise.reject({ status: 400, msg: 'Bad request' });
+  }
+  if (topic) {
+    baseQuery += `WHERE topic = '${topic}' `;
+  }
+
+  baseQuery += `GROUP BY articles.article_id `;
+  if (sort_by !== 'comments_count') {
+    baseQuery += format('ORDER BY articles.%s', sort_by);
+  } else {
+    baseQuery += format('ORDER BY %s', sort_by);
+  }
+  baseQuery += order === 'ASC' ? ' ASC;' : ' DESC;';
+
+  return db.query(baseQuery).then((response) => {
     if (response.rowCount === 0) {
       return Promise.reject({ status: 404, msg: 'Not found' });
     }
@@ -25,7 +40,22 @@ exports.selectArticles = () => {
   });
 };
 exports.selectArticle = (article_id) => {
-  const queryStr = 'SELECT * FROM articles WHERE article_id = $1;';
+  const queryStr = `SELECT 
+  articles.author, 
+  articles.body, 
+  articles.title, 
+  articles.article_id, 
+  articles.article_img_url,
+  articles.topic, 
+  articles.created_at, 
+  articles.votes, 
+  COUNT(comments.article_id)::int as comments_count
+  FROM articles
+  LEFT JOIN comments ON articles.article_id = comments.article_id
+  WHERE articles.article_id = $1
+  GROUP BY articles.article_id;
+`;
+
   return db.query(queryStr, [article_id]).then((response) => {
     if (response.rowCount === 0) {
       return Promise.reject({ status: 404, msg: 'Not found' });

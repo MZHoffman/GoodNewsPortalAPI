@@ -39,14 +39,12 @@ exports.removeComment = (req, res, next) => {
   const { comment_id } = req.params;
   return deleteComment(comment_id)
     .then((deletedComments) => {
-      console.log('🚀 ~ .then ~ comment:', deletedComments);
       if (!deletedComments) {
         return Promise.reject({ status: 404, msg: 'Not found' });
       }
       return res.status(204).send();
     })
     .catch((err) => {
-      console.log('🚀 ~ err:', err);
       return next(err);
     });
 };

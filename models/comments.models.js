@@ -25,9 +25,7 @@ exports.deleteComment = (comment_id) => {
     `DELETE FROM comments WHERE comment_id = %L RETURNING *;`,
     comment_id
   );
-  console.log('🚀 ~ exports.deleteComment ~ queryStr:', queryStr);
   return db.query(queryStr).then((response) => {
-    console.log('🚀 ~ returndb.query ~ response:', response.rowCount);
     return response.rowCount;
   });
 };

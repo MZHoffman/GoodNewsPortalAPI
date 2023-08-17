@@ -45,7 +45,7 @@ describe('GET /api/topics', () => {
   });
 });
 describe('GET /api/articles', () => {
-  test('returns array lamgth of 13', () => {
+  test('returns array length of 13', () => {
     return request(app)
       .get('/api/articles')
       .expect(200)
@@ -84,6 +84,24 @@ describe('GET /api/articles', () => {
         expect(articles).toBeSortedBy('created_at', { descending: true });
       });
   });
+  test('returns array sorted by topic ASC', () => {
+    return request(app)
+      .get('/api/articles?sort_by=topic&order=ASC')
+      .expect(200)
+      .then((response) => {
+        const { articles } = response.body;
+        expect(articles).toBeSortedBy('topic', { descending: false });
+      });
+  });
+  test('returns array filter by topic: mitch', () => {
+    return request(app)
+      .get('/api/articles?topic=mitch')
+      .expect(200)
+      .then((response) => {
+        const { articles } = response.body;
+        articles.forEach((article) => expect(article.topic).toBe('mitch'));
+      });
+  });
   test('returns objects doesnt have body property', () => {
     return request(app)
       .get('/api/articles')
@@ -92,6 +110,22 @@ describe('GET /api/articles', () => {
         articles.forEach((article) =>
           expect(article).not.toHaveProperty('body')
         );
+      });
+  });
+  test('returns error if not allowed topic passed', () => {
+    return request(app)
+      .get('/api/articles?topic=alpacas')
+      .expect(400)
+      .then((response) => {
+        expect(response.body.msg).toBe('Bad request');
+      });
+  });
+  test('returns error if sorted by non existing colum', () => {
+    return request(app)
+      .get('/api/articles?sort_by=alpacas')
+      .expect(400)
+      .then((response) => {
+        expect(response.body.msg).toBe('Bad request');
       });
   });
 });
@@ -123,6 +157,7 @@ describe('GET /api/articles/:article_id', () => {
           'article_img_url',
           'https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700'
         );
+        expect(article).toHaveProperty('comments_count', 11);
       });
   });
 
@@ -407,10 +442,6 @@ describe('GET /api/users', () => {
       .get('/api/users')
       .then((response) => {
         const { users } = response.body;
-        console.log(
-          '🚀 ~ .then ~ users:',
-          JSON.stringify(response.body, null, 2)
-        );
         users.forEach((user) =>
           expect(user).toEqual(
             expect.objectContaining({
