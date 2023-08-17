@@ -27,7 +27,6 @@ exports.patchArticle = (req, res, next) => {
   return updateArticle(article_id, inc_votes)
     .then((article) => res.status(200).send({ article }))
     .catch((err) => {
-      console.log('🚀 ~ err:', err);
       return next(err);
     });
 };
