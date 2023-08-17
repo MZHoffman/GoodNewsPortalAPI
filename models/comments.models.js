@@ -19,13 +19,3 @@ exports.insertCommentForArticle = (article_id, username, body) => {
     return response.rows[0];
   });
 };
-
-exports.deleteComment = (comment_id) => {
-  const queryStr = format(
-    `DELETE FROM comments WHERE comment_id = %L RETURNING *;`,
-    comment_id
-  );
-  return db.query(queryStr).then((response) => {
-    return response.rowCount;
-  });
-};
