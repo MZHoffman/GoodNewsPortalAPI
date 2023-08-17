@@ -1,13 +1,11 @@
 const express = require('express');
+
 const articles = require('./routes/articles.routes');
-const { getTopics } = require('./controllers/topics.controller');
-const { getAPIDescription } = require('./controllers/endpoits.controller');
-const {
-  getCommentsForArticle,
-  postCommentsForArticle,
-  removeComment,
-} = require('./controllers/comments.controller');
-const { getUsers } = require('./controllers/users.controller');
+const comments = require('./routes/comments.routes');
+const endpoints = require('./routes/endpoints.routes');
+const topics = require('./routes/topics.routes');
+const users = require('./routes/users.routes');
+
 const {
   generalError,
   Error400,
@@ -20,13 +18,10 @@ const app = express();
 app.use(express.json());
 
 app.use('/api/articles', articles);
-
-app.get('/api/topics', getTopics);
-app.get('/api', getAPIDescription);
-app.get('/api/articles/:article_id/comments', getCommentsForArticle);
-app.post('/api/articles/:article_id/comments', postCommentsForArticle);
-app.delete('/api/comments/:comment_id', removeComment);
-app.get('/api/users', getUsers);
+app.use('/api/comments', comments);
+app.use('/api', endpoints);
+app.use('/api/topics', topics);
+app.use('/api/users', users);
 
 app.all('*', pathError);
 app.use(generalError);
