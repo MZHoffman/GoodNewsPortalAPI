@@ -1,14 +1,10 @@
 const express = require('express');
 
 const articles = require('./routes/articles.routes');
-// const comments = require('./routes/comments.routes');
 const comments = require('./routes/comments.routes');
-
 const endpoints = require('./routes/endpoints.routes');
 const topics = require('./routes/topics.routes');
 const users = require('./routes/users.routes');
-
-const { removeComment } = require('./controllers/comments.controller');
 
 const {
   generalError,
@@ -26,8 +22,6 @@ app.use('/api/comments', comments);
 app.use('/api', endpoints);
 app.use('/api/topics', topics);
 app.use('/api/users', users);
-
-// app.delete('/api/comments/:comment_id', removeComment);
 
 app.all('*', pathError);
 app.use(generalError);
