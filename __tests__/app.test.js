@@ -186,7 +186,6 @@ describe('GET /api/articles/:article_id', () => {
       });
   });
 });
-
 describe('GET /api/articles/:article_id/comments', () => {
   test('returns array of 11 comments for  article_id 1', () => {
     return request(app)
@@ -251,7 +250,6 @@ describe('GET /api/articles/:article_id/comments', () => {
       });
   });
 });
-
 describe('POST /api/articles/:article_id/comments', () => {
   test('returns a comment object with required keys and right values', () => {
     const body = {
@@ -340,7 +338,6 @@ describe('POST /api/articles/:article_id/comments', () => {
       });
   });
 });
-
 describe('PATCH /api/articles/:article_id', () => {
   test('returns updated article with incremented votes', () => {
     const body = {
@@ -425,7 +422,6 @@ describe('PATCH /api/articles/:article_id', () => {
       });
   });
 });
-
 describe('DELETE /api/comments/:comment_id', () => {
   test('DELETE /api/comments/1returns 204', () => {
     return request(app).delete('/api/comments/1').expect(204);
@@ -447,7 +443,6 @@ describe('DELETE /api/comments/:comment_id', () => {
       });
   });
 });
-
 describe('GET /api/users', () => {
   test('returns array length of 4 user objects', () => {
     return request(app)
@@ -477,6 +472,37 @@ describe('GET /api/users', () => {
   });
 });
 
+describe('GET /api/users/:username', () => {
+  test('returns a user object with the right values', () => {
+    return request(app)
+      .get('/api/users/icellusedkars')
+      .expect(200)
+      .then((response) => {
+        const { user } = response.body;
+        console.log(
+          '🚀 ~ .then ~ response.body:',
+          JSON.stringify(response.body, null, 2)
+        );
+        expect(user).toEqual({
+          avatar_url:
+            'https://avatars2.githubusercontent.com/u/24604688?s=460&v=4',
+          name: 'sam',
+          username: 'icellusedkars',
+        });
+      });
+  });
+});
+describe('GET /api/users/:username', () => {
+  test('returns an error if user doesnt exists', () => {
+    return request(app)
+      .get('/api/users/MrBombastic')
+      .expect(404)
+      .then((response) => {
+        const { msg } = response.body;
+        expect(msg).toBe('Not found');
+      });
+  });
+});
 describe('GET /api', () => {
   test('GET /api returns endpoints desctiption object', () => {
     return request(app)
