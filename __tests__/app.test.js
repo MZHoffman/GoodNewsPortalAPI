@@ -499,6 +499,81 @@ describe('GET /api/users/:username', () => {
       });
   });
 });
+describe('PATCH /api/comments/:article_id', () => {
+  test('returns updated comment with incremented votes', () => {
+    const body = {
+      inc_votes: 1,
+    };
+    return request(app)
+      .patch('/api/comments/1')
+      .send(body)
+      .expect(200)
+      .then((response) => {
+        const { comment } = response.body;
+        expect(comment).toEqual({
+          comment_id: 1,
+          body: "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
+          article_id: 9,
+          author: 'butter_bridge',
+          votes: 17,
+          created_at: '2020-04-06T12:17:00.000Z',
+        });
+      });
+  });
+  test('returns updated comment with decremented votes', () => {
+    const body = {
+      inc_votes: -101,
+    };
+    return request(app)
+      .patch('/api/comments/1')
+      .send(body)
+      .then((response) => {
+        const { comment } = response.body;
+        expect(comment).toEqual({
+          comment_id: 1,
+          body: "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
+          article_id: 9,
+          author: 'butter_bridge',
+          votes: -85,
+          created_at: '2020-04-06T12:17:00.000Z',
+        });
+      });
+  });
+  test('returns an error if comment not found', () => {
+    const body = {
+      inc_votes: -101,
+    };
+    return request(app)
+      .patch('/api/comments/999999')
+      .send(body)
+      .expect(404)
+      .then((response) => {
+        expect(response.body.msg).toBe('Not found');
+      });
+  });
+  test('returns an error if body has not been passed', () => {
+    const body = {};
+    return request(app)
+      .patch('/api/comments/1')
+      .send(body)
+      .expect(400)
+      .then((response) => {
+        expect(response.body.msg).toBe('Bad request');
+      });
+  });
+  test('returns an error if body isnt an int', () => {
+    const body = {
+      inc_votes: 'BOOM!',
+    };
+    return request(app)
+      .patch('/api/comments/1')
+      .send(body)
+      .expect(400)
+      .then((response) => {
+        expect(response.body.msg).toBe('Bad request');
+      });
+  });
+});
 describe('GET /api', () => {
   test('GET /api returns endpoints desctiption object', () => {
     return request(app)

@@ -136,7 +136,18 @@
       "name": "sam",
       "avatar_url": "https://avatars2.githubusercontent.com/u/24604688?s=460&v=4"
     }}
+  },
+  "PATCH /api/comments/:coment_id": {
+    "description": "Changes votes",
+    "queries": [],
+    "exampleResponse": {"comment": {
+      "comment_id": 1,
+      "body": "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
+      "article_id": 9,
+      "author": "butter_bridge",
+      "votes": -85,
+      "created_at": "2020-04-06T12:17:00.000Z"
+    }}
   }
 }
-
 
