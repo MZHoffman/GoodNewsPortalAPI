@@ -2,6 +2,7 @@ const {
   selectArticles,
   selectArticle,
   updateArticle,
+  insertArticle,
 } = require('../models/articles.modles');
 const { isTopicExists } = require('../models/topics.models');
 
@@ -34,6 +35,17 @@ exports.patchArticle = (req, res, next) => {
   const { inc_votes } = req.body;
   return updateArticle(article_id, inc_votes)
     .then((article) => res.status(200).send({ article }))
+    .catch((err) => {
+      return next(err);
+    });
+};
+
+exports.postArticle = (req, res, next) => {
+  const { author, title, body, topic, article_img_url } = req.body;
+  return insertArticle(author, title, body, topic, article_img_url)
+    .then((article) =>
+      res.status(200).send({ article: { ...article, comment_count: 0 } })
+    )
     .catch((err) => {
       return next(err);
     });

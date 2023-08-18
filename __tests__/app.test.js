@@ -574,6 +574,157 @@ describe('PATCH /api/comments/:article_id', () => {
       });
   });
 });
+describe.only('POST /api/articles', () => {
+  test('returns an article object with required keys and right values', () => {
+    const body = {
+      author: 'butter_bridge',
+      title: 'test',
+      body: 'test',
+      topic: 'cats',
+      article_img_url: 'test',
+    };
+    return request(app)
+      .post('/api/articles')
+      .send(body)
+      .expect(200)
+      .then((response) => {
+        const { article } = response.body;
+        article.created_at = new Date(article.created_at);
+        expect(article).toEqual({
+          article_id: 14,
+          title: 'test',
+          topic: 'cats',
+          author: 'butter_bridge',
+          body: 'test',
+          created_at: expect.any(Date),
+          votes: 0,
+          article_img_url: 'test',
+          comment_count: 0,
+        });
+      });
+  });
+  test('returns an article with default image url if article_img_url has not been passed', () => {
+    const body = {
+      author: 'butter_bridge',
+      title: 'test',
+      body: 'test',
+      topic: 'cats',
+    };
+    return request(app)
+      .post('/api/articles')
+      .send(body)
+      .expect(200)
+      .then((response) => {
+        const { article } = response.body;
+        article.created_at = new Date(article.created_at);
+        expect(article).toEqual({
+          article_id: 14,
+          title: 'test',
+          topic: 'cats',
+          author: 'butter_bridge',
+          body: 'test',
+          created_at: expect.any(Date),
+          votes: 0,
+          article_img_url: 'default.url.uk',
+          comment_count: 0,
+        });
+      });
+  });
+
+  test('returns a an error if topic doesnt exists', () => {
+    const body = {
+      author: 'butter_bridge',
+      title: 'test',
+      body: 'test',
+      topic: 'alpacas',
+      article_img_url: 'test',
+    };
+    return request(app)
+      .post('/api/articles/')
+      .send(body)
+      .expect(404)
+      .then((response) => {
+        expect(response.body.msg).toBe('Not found');
+      });
+  });
+  test('returns a an error if author doesnt exists', () => {
+    const body = {
+      author: 'MrBombastic',
+      title: 'test',
+      body: 'test',
+      topic: 'cats',
+      article_img_url: 'test',
+    };
+    return request(app)
+      .post('/api/articles/')
+      .send(body)
+      .expect(404)
+      .then((response) => {
+        expect(response.body.msg).toBe('Not found');
+      });
+  });
+  test('returns a an error if author hasnt been passed', () => {
+    const body = {
+      title: 'test',
+      body: 'test',
+      topic: 'cats',
+      article_img_url: 'test',
+    };
+    return request(app)
+      .post('/api/articles/')
+      .send(body)
+      .expect(400)
+      .then((response) => {
+        expect(response.body.msg).toBe('Bad request');
+      });
+  });
+  test('returns a an error if body hasnt been passed', () => {
+    const body = {
+      author: 'butter_bridge',
+      title: 'test',
+      topic: 'cats',
+      article_img_url: 'test',
+    };
+    return request(app)
+      .post('/api/articles/')
+      .send(body)
+      .expect(400)
+      .then((response) => {
+        expect(response.body.msg).toBe('Bad request');
+      });
+  });
+  test('returns a an error if title hasnt been passed', () => {
+    const body = {
+      author: 'butter_bridge',
+      topic: 'cats',
+      body: 'test',
+
+      article_img_url: 'test',
+    };
+    return request(app)
+      .post('/api/articles/')
+      .send(body)
+      .expect(400)
+      .then((response) => {
+        expect(response.body.msg).toBe('Bad request');
+      });
+  });
+  test('returns a an error if topic hasnt been passed', () => {
+    const body = {
+      author: 'butter_bridge',
+      title: 'test',
+      body: 'test',
+      article_img_url: 'test',
+    };
+    return request(app)
+      .post('/api/articles/')
+      .send(body)
+      .expect(400)
+      .then((response) => {
+        expect(response.body.msg).toBe('Bad request');
+      });
+  });
+});
 describe('GET /api', () => {
   test('GET /api returns endpoints desctiption object', () => {
     return request(app)
