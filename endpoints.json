@@ -127,5 +127,16 @@
         "avatar_url": "https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png"
       }
     ]}
+  },
+  "GET /api/users/:username": {
+    "description": "Returns user by username",
+    "queries": [],
+    "exampleResponse": {"user": {
+      "username": "icellusedkars",
+      "name": "sam",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/24604688?s=460&v=4"
+    }}
   }
 }
+
+
