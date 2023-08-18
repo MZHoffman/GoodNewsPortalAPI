@@ -479,10 +479,6 @@ describe('GET /api/users/:username', () => {
       .expect(200)
       .then((response) => {
         const { user } = response.body;
-        console.log(
-          '🚀 ~ .then ~ response.body:',
-          JSON.stringify(response.body, null, 2)
-        );
         expect(user).toEqual({
           avatar_url:
             'https://avatars2.githubusercontent.com/u/24604688?s=460&v=4',
