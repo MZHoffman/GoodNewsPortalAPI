@@ -2,8 +2,6 @@ const format = require('pg-format');
 const db = require('../db/connection');
 
 exports.selectArticles = (sort_by = 'created_at', order, topic) => {
-  const allowedTopics = ['mitch', 'cats', 'paper', undefined];
-
   let baseQuery = `SELECT 
   articles.author, 
   articles.title, 
@@ -17,13 +15,9 @@ exports.selectArticles = (sort_by = 'created_at', order, topic) => {
   LEFT JOIN comments ON articles.article_id = comments.article_id
 `;
 
-  if (!allowedTopics.includes(topic)) {
-    return Promise.reject({ status: 400, msg: 'Bad request' });
-  }
   if (topic) {
-    baseQuery += `WHERE topic = '${topic}' `;
+    baseQuery += format(`WHERE topic = %L `, topic);
   }
-
   baseQuery += `GROUP BY articles.article_id `;
   if (sort_by !== 'comments_count') {
     baseQuery += format('ORDER BY articles.%s', sort_by);

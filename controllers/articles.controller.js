@@ -3,11 +3,18 @@ const {
   selectArticle,
   updateArticle,
 } = require('../models/articles.modles');
+const { isTopicExists } = require('../models/topics.models');
 
 exports.getArticles = (req, res, next) => {
   const { sort_by, order, topic } = req.query;
-  return selectArticles(sort_by, order, topic)
-    .then((articles) => res.status(200).send({ articles }))
+  const promises = [
+    isTopicExists(topic),
+    selectArticles(sort_by, order, topic),
+  ];
+  return Promise.all(promises)
+    .then(([isTopicExists, articles]) => {
+      res.status(200).send({ articles });
+    })
     .catch((err) => {
       return next(err);
     });
