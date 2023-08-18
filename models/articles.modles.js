@@ -69,3 +69,20 @@ exports.updateArticle = (article_id, inc_votes) => {
     return response.rows[0];
   });
 };
+exports.insertArticle = (
+  author,
+  title,
+  body,
+  topic,
+  article_img_url = 'default.url.uk'
+) => {
+  const queryStr = format(
+    `INSERT INTO articles 
+  (author, title, body, topic, article_img_url)
+  VALUES %L RETURNING *;`,
+    [[author, title, body, topic, article_img_url]]
+  );
+  return db.query(queryStr).then((response) => {
+    return response.rows[0];
+  });
+};
