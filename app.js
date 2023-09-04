@@ -1,4 +1,5 @@
 const express = require('express');
+const cors = require('cors');
 
 const articles = require('./routes/articles.routes');
 const comments = require('./routes/comments.routes');
@@ -15,6 +16,9 @@ const {
 } = require('./errors');
 
 const app = express();
+
+app.use(cors());
+
 app.use(express.json());
 
 app.use('/api/articles', articles);
